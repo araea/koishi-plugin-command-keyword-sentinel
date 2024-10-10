@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-command-keyword-sentinel",
-  "description": "",
+  "description": "Koishi 的指令过滤插件。当指令参数中包含预设的关键词，会触发预设的动作。",
   "version": "0.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -9,14 +9,35 @@
     "dist"
   ],
   "license": "MIT",
-  "scripts": {},
+  "author": "Nawyjx <3373167460@qq.com>",
+  "homepage": "https://www.npmjs.com/package/koishi-plugin-command-keyword-sentinel?activeTab=readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/araea/koishi-plugin-command-keyword-sentinel.git"
+  },
   "keywords": [
     "chatbot",
     "koishi",
-    "plugin"
+    "plugin",
+    "command",
+    "filter",
+    "sentinel",
+    "keyword",
+    "keywords",
+    "关键词",
+    "过滤",
+    "指令过滤",
+    "命令过滤",
+    "关键词过滤"
   ],
-  "devDependencies": {},
   "peerDependencies": {
-    "koishi": "^4.18.0"
+    "koishi": "^4.17.5"
+  },
+  "devDependencies": {
+    "koishi-plugin-adapter-onebot": "^6.5.3",
+    "koishi-plugin-markdown-to-image-service": "^1.1.8"
+  },
+  "dependencies": {
+    "@satorijs/element": "^3.1.7"
   }
 }
