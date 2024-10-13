@@ -8,18 +8,13 @@ import * as fs from "fs";
 export const name = 'command-keyword-sentinel'
 export const inject = {
   required: ['notifier'],
-  optional: ['markdownToImage'],
+  optional: ['markdownToImage', 'database'],
 }
 export const usage = `
 ## 指令
 
-- \`commandKeywordSentinel.你不乖哦 <arg:user> [customTimeLimit:number]\`：屏蔽不乖的小朋友（未设置权限等级）。
-
-  - \`arg\`：必选参数，@某个成员。
-  - \`customTimeLimit\`：可选参数，单位是秒。默认为配置项中 timeLimit 的值。
-
-- \`commandKeywordSentinel.我原谅你啦 <arg:user>\`：取消屏蔽被关起来的小朋友（未设置权限等级）。
-  - \`arg\`：必选参数，@某个成员。
+- \`commandKeywordSentinel.你不乖哦 <@指定成员> [封印时长]\`：封印（未设置权限等级）。
+- \`commandKeywordSentinel.我原谅你啦 <@指定成员>\`：取消封印（未设置权限等级）。
 
 ## QQ 群
 
@@ -67,15 +62,15 @@ export interface Config {
 // pz* pzx*
 export const Config: Schema<Config> = Schema.intersect([
   Schema.object({
-    isMentioned: Schema.boolean().default(false).description('适用于用户无指令直接提及或引用机器人触发机器人响应的情况。例如：davinci-003、rr-su-chat。'),
+    isMentioned: Schema.boolean().default(false).description('Bot 被 @ 时检测关键词，适用于通过 @ 触发机器人响应的情况。'),
     keywords: Schema.array(String).role('table').description('过滤关键词，支持多个关键词，请点击右边的 `添加行` 按钮添加。'),
-    action: Schema.union(['仅封印无提示', '仅提示', '既封印又提示']).default('既封印又提示').description('触发关键词后做的动作。'),
-    timeLimit: Schema.number().default(60).description('触发关键词后屏蔽的时间（秒）。'),
-    triggerMessage: Schema.string().role('textarea', {rows: [1, 4]}).default('你一点都不可爱喵~ 从现在开始我要讨厌你一会儿啦~ 略略略~').description('触发关键词后的提示信息.'),
-    bannedMessage: Schema.string().role('textarea', {rows: [1, 4]}).default('哼~ 我还在生气呢~ 叫你惹我生气！凶你喵~！《剩余时间》 秒后再来找我玩吧~').description('被屏蔽后的提示信息（文本中的《剩余时间》将会被替换成实际剩余时间的秒数）。'),
-    reminderMessage: Schema.string().role('textarea', {rows: [1, 4]}).default('我警告你喵~ 别再惹我生气啦~ 否则的话，我会生气的！（拿起小拳头对你挥了挥喵~）').description('触发关键词的提示信息（仅提示不屏蔽）。'),
-    naughtyMemberMessage: Schema.string().role('textarea', {rows: [1, 4]}).default('我才不要和不乖的小朋友玩呢~ 哼哼喵~（叉腰）我要讨厌你一会儿啦~ 啦啦啦~').description('手动屏蔽不乖的成员的提示信息。'),
-    forgiveMessage: Schema.string().role('textarea', {rows: [1, 4]}).default('好了嘛~ 别不高兴了喵~！我已经原谅你啦~ 快来继续找我玩吧~ 嘿嘿~').description('手动取消屏蔽某个成员的提示信息。'),
+    action: Schema.union(['仅封印无提示', '仅提示', '既封印又提示']).default('既封印又提示').description('预设的动作。'),
+    timeLimit: Schema.number().default(60).description('封印时间（秒）'),
+    triggerMessage: Schema.string().role('textarea', {rows: [1, 4]}).default('你一点都不可爱喵~ 从现在开始我要讨厌你一会儿啦~ 略略略~').description('触发关键词后的提示信息（封印版）。'),
+    bannedMessage: Schema.string().role('textarea', {rows: [1, 4]}).default('哼~ 我还在生气呢~ 叫你惹我生气！凶你喵~！《剩余时间》 秒后再来找我玩吧~').description('被封印的用户使用指令时的提示信息。（《剩余时间》会自动被替换）。'),
+    reminderMessage: Schema.string().role('textarea', {rows: [1, 4]}).default('我警告你喵~ 别再惹我生气啦~ 否则的话，我会生气的！（拿起小拳头对你挥了挥喵~）').description('触发关键词后的提示信息（不封印版）。'),
+    naughtyMemberMessage: Schema.string().role('textarea', {rows: [1, 4]}).default('我才不要和不乖的小朋友玩呢~ 哼哼喵~（叉腰）我要讨厌你一会儿啦~ 啦啦啦~').description('手动封印的提示信息。'),
+    forgiveMessage: Schema.string().role('textarea', {rows: [1, 4]}).default('好了嘛~ 别不高兴了喵~！我已经原谅你啦~ 快来继续找我玩吧~ 嘿嘿~').description('手动取消封印的提示信息。'),
   }),
 
   Schema.object({

@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-command-keyword-sentinel",
   "description": "Koishi 的指令过滤插件。当指令参数中包含预设的关键词，会触发预设的动作。",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
