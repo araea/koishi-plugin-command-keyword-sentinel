@@ -404,26 +404,26 @@ export async function apply(ctx: Context, config: Config) {
   let sentMessages = [];
 
   async function sendMessage(session: any, message: any): Promise<void> {
-    const {bot, channelId} = session;
-    let messageId;
-    if (config.imageConversionEnabled) {
-      const modifiedMessage = modifyMessage(message);
-      const imageBuffer = await ctx.markdownToImage.convertToImage(modifiedMessage);
-      [messageId] = await session.send(h.image(imageBuffer, `image/${config.imageType}`));
-    } else {
-      [messageId] = await session.send(message);
-    }
+      const {bot, channelId} = session;
+      let messageId: string;
+      if (config.imageConversionEnabled) {
+        const modifiedMessage = modifyMessage(message);
+        const imageBuffer = await ctx.markdownToImage.convertToImage(modifiedMessage);
+        [messageId] = await session.send(h.image(imageBuffer, `image/${config.imageType}`));
+      } else {
+        [messageId] = await session.send(message);
+      }
 
-    if (config.retractDelay === 0 || config.retractDelay === undefined) return;
-    sentMessages.push(messageId);
+      if (config.retractDelay === 0 || config.retractDelay === undefined) return;
+      sentMessages.push(messageId);
 
-    if (sentMessages.length >= 1) {
-      const oldestMessageId = sentMessages.shift();
-      setTimeout(async () => {
-        await bot.deleteMessage(channelId, oldestMessageId);
-      }, config.retractDelay * 1000);
+      if (sentMessages.length >= 1) {
+        const oldestMessageId = sentMessages.shift();
+        setTimeout(async () => {
+          await bot.deleteMessage(channelId, oldestMessageId);
+        }, config.retractDelay * 1000);
+      }
     }
-  }
 
   let sentPrivateMessages = [];
 
