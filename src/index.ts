@@ -198,7 +198,8 @@ export function apply(ctx: Context, config: Config) {
   // @ 机器人的普通消息：只有开启 isMentioned 时才检测
   ctx.middleware((session, next) => {
     if (!config.isMentioned || !mentionsSelf(session)) return next()
-    const result = inspect(session, [session.stripped.content])
+    // 走引用回复这条路径时 stripped 可能不存在，退回原始内容
+    const result = inspect(session, [session.stripped?.content ?? session.content])
     return result === null ? next() : result
   }, true)
 
