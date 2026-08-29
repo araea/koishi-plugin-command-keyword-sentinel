@@ -74,19 +74,19 @@ export const Config: Schema<Config> = Schema.intersect([
 
   Schema.object({
     triggerMessage: Schema.string().role('textarea', { rows: [1, 4] })
-      .default('你一点都不可爱喵~ 从现在开始我要讨厌你一会儿啦~ 略略略~')
+      .default('⚠️ 命中关键词，你已被封印 {remaining} 秒。')
       .description('命中关键词并被封印时的提示。'),
     reminderMessage: Schema.string().role('textarea', { rows: [1, 4] })
-      .default('我警告你喵~ 别再惹我生气啦~ 否则的话，我会生气的！（拿起小拳头对你挥了挥喵~）')
+      .default('⚠️ 请不要使用这个关键词。')
       .description('命中关键词但不封印时的提示（动作为 `仅提示` 时使用）。'),
     bannedMessage: Schema.string().role('textarea', { rows: [1, 4] })
-      .default('哼~ 我还在生气呢~ 叫你惹我生气！凶你喵~！{remaining} 秒后再来找我玩吧~')
+      .default('⚠️ 你还在封印中，剩余 {remaining} 秒。')
       .description('封印期间使用指令时的提示。'),
     naughtyMemberMessage: Schema.string().role('textarea', { rows: [1, 4] })
-      .default('我才不要和不乖的小朋友玩呢~ 哼哼喵~（叉腰）我要讨厌你一会儿啦~ 啦啦啦~')
+      .default('✅ 已封印该成员 {remaining} 秒。')
       .description('手动封印时的提示。'),
     forgiveMessage: Schema.string().role('textarea', { rows: [1, 4] })
-      .default('好了嘛~ 别不高兴了喵~！我已经原谅你啦~ 快来继续找我玩吧~ 嘿嘿~')
+      .default('✅ 已解除封印。')
       .description('手动解除封印时的提示。'),
   }).description('消息'),
 ])
@@ -218,7 +218,7 @@ export function apply(ctx: Context, config: Config) {
   function forbid(session: Session) {
     if (!config.managers?.length) return null
     if (config.managers.includes(session.userId)) return null
-    return '你没有权限使用这个指令。'
+    return '⚠️ 你没有权限使用这个指令。'
   }
 
   const cmd = ctx.command('commandKeywordSentinel', '指令关键词哨兵')
@@ -231,7 +231,7 @@ export function apply(ctx: Context, config: Config) {
     .action(({ session }, target, duration) => {
       const denied = forbid(session)
       if (denied) return denied
-      if (!target) return '请指定要封印的成员，例如：sentinel.seal @小明'
+      if (!target) return '⚠️ 请指定要封印的成员。例：sentinel.seal @小明'
       const userId = target.split(':')[1]
       seals.set(keyOf(session, userId), Date.now() + (duration || config.timeLimit) * 1000)
       return render(config.naughtyMemberMessage, { remaining: duration || config.timeLimit })
@@ -242,7 +242,7 @@ export function apply(ctx: Context, config: Config) {
     .action(({ session }, target) => {
       const denied = forbid(session)
       if (denied) return denied
-      if (!target) return '请指定要解除封印的成员，例如：sentinel.unseal @小明'
+      if (!target) return '⚠️ 请指定要解除封印的成员。例：sentinel.unseal @小明'
       seals.delete(keyOf(session, target.split(':')[1]))
       return render(config.forgiveMessage, {})
     })
@@ -259,8 +259,8 @@ export function apply(ctx: Context, config: Config) {
         const left = remaining(key)
         if (left > 0) lines.push(`${key.slice(prefix.length)}（剩余 ${left} 秒）`)
       }
-      if (!lines.length) return '当前没有被封印的成员。'
-      return `当前被封印的成员：\n${lines.join('\n')}`
+      if (!lines.length) return '⚠️ 当前没有被封印的成员。'
+      return `📋 当前被封印的成员：\n${lines.join('\n')}`
     })
 
 }
