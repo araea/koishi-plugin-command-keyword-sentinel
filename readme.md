@@ -1,5 +1,5 @@
 koishi-plugin-command-keyword-sentinel
-========================
+======================================
 
 [<img alt="github" src="https://img.shields.io/badge/github-araea/command_keyword_sentinel-8da0cb?style=for-the-badge&labelColor=555555&logo=github" height="20">](https://github.com/araea/koishi-plugin-command-keyword-sentinel)
 [<img alt="npm" src="https://img.shields.io/npm/v/koishi-plugin-command-keyword-sentinel.svg?style=for-the-badge&color=fc8d62&logo=npm" height="20">](https://www.npmjs.com/package/koishi-plugin-command-keyword-sentinel)
@@ -10,7 +10,7 @@ Koishi 的指令关键词哨兵插件。
 
 开箱即用：不需要数据库，不需要任何前置服务，装上填几个关键词就能工作。
 
-## 快速开始
+## 使用
 
 1. 在插件配置的 `keywords` 里逐行填入要过滤的关键词。
 2. 按需调整 `action`（动作）和 `timeLimit`（封印时长），其余保持默认即可。
@@ -28,9 +28,7 @@ Koishi 的指令关键词哨兵插件。
 
 ### 谁能使用这些指令
 
-管理指令默认要求 **2 级权限**（配置项 `manageAuthority`）。
-
-⚠️ 权限等级依赖数据库，**没有安装数据库时这项限制不会生效**，任何人都能封印任何人。这种情况下请在 `managers` 里填上管理员的用户 ID，只有名单内的人才能使用管理指令。装了数据库的话，用 `admin` 插件执行 `authorize -u @某人 2` 授权即可。
+管理指令默认要求 2 级权限（配置项 `manageAuthority`）。权限等级依赖数据库，没有装数据库时这项限制不会生效，任何人都能封印任何人。那种情况请在 `managers` 里填管理员用户 ID。装了数据库的话，用 `admin` 插件执行 `authorize -u @某人 2` 即可。
 
 ## 配置
 
@@ -87,7 +85,7 @@ Koishi 的指令关键词哨兵插件。
 ## 致谢
 
 - [Koishi](https://koishi.chat/)
-- [melinoe](https://forum.koishi.xyz/t/topic/4578)：来源
+- [melinoe](https://forum.koishi.xyz/t/topic/4578)
 
 ## QQ 群
 
