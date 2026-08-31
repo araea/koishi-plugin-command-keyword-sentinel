@@ -2,28 +2,18 @@ import { Context, Schema, Session, Time } from 'koishi'
 
 export const name = 'command-keyword-sentinel'
 
-export const usage = `
-## 简介
+export const usage = `## 使用
 
-指令关键词哨兵：当用户的指令参数（或 @ 机器人的消息）里出现预设关键词时，触发提示、并把该用户「封印」一段时间。封印期间他的所有指令都会被拦截。
+在 \`keywords\` 中填入关键词。命中时拦截指令并封印用户，时长由 \`timeLimit\` 控制。
 
 ## 指令
 
 | 指令 | 说明 |
 | --- | --- |
 | \`sentinel\` | 查看帮助 |
-| \`sentinel.seal <@成员> [时长]\` | 手动封印，时长单位为秒，省略则用配置里的默认值 |
+| \`sentinel.seal <@成员> [时长]\` | 手动封印（秒） |
 | \`sentinel.unseal <@成员>\` | 解除封印 |
-| \`sentinel.list\` | 查看当前被封印的成员 |
-
-三个管理指令默认需要 **2 级权限**。权限等级依赖数据库，**没装数据库时该限制不生效**——这种情况下请在配置项 \`managers\` 里填上管理员的用户 ID，只有名单内的人才能使用这些指令。装了数据库的话，用 \`admin\` 插件的 \`authorize -u @某人 2\` 授权即可。
-
-旧版指令名 \`commandKeywordSentinel.你不乖哦\` / \`.我原谅你啦\` 仍然可用。
-
-## 消息占位符
-
-提示消息里可使用 \`{remaining}\`（剩余秒数）、\`{keyword}\`（命中的关键词）、\`{user}\`（用户名）。旧写法 \`《剩余时间》\` 等价于 \`{remaining}\`。
-`
+| \`sentinel.list\` | 查看封印列表 |`
 
 export interface Config {
   keywords: string[]
