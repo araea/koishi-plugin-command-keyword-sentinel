@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-command-keyword-sentinel",
-  "description": "Koishi 的指令关键词哨兵插件。指令参数命中预设关键词时，提示并临时封印该用户。",
+  "description": "Koishi 的指令关键词过滤插件。",
   "version": "1.0.2",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
