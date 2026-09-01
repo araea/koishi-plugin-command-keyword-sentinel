@@ -211,8 +211,8 @@ export function apply(ctx: Context, config: Config) {
     return '⚠️ 你没有权限使用这个指令。'
   }
 
-  const cmd = ctx.command('commandKeywordSentinel', '指令关键词哨兵')
-    .alias('sentinel')
+  const cmd = ctx.command('sentinel', '指令关键词哨兵')
+    .alias('commandKeywordSentinel')
 
   cmd.subcommand('.seal <target:user> [duration:posint]', '封印一位成员', { authority: config.manageAuthority })
     .alias('.你不乖哦')
