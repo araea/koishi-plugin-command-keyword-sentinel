@@ -1,41 +1,25 @@
-koishi-plugin-command-keyword-sentinel
-======================================
+# koishi-plugin-command-keyword-sentinel
 
-[<img alt="github" src="https://img.shields.io/badge/github-araea/koishi__plugin__command__keyword__sentinel-8da0cb?style=for-the-badge&labelColor=555555&logo=github" height="20">](https://github.com/araea/koishi-plugin-command-keyword-sentinel)
-[<img alt="npm" src="https://img.shields.io/npm/v/koishi-plugin-command-keyword-sentinel.svg?style=for-the-badge&color=fc8d62&logo=npm" height="20">](https://www.npmjs.com/package/koishi-plugin-command-keyword-sentinel)
+指令关键词过滤插件。命中关键词时拦截指令并暂时封印用户。
 
-Koishi 的指令关键词过滤插件。
+## 安装
 
-## 使用
+~~~sh
+yarn add koishi-plugin-command-keyword-sentinel
+~~~
 
-在 `keywords` 中填入关键词。命中时拦截指令并封印用户，时长由 `timeLimit` 控制。
+在 Koishi 配置中启用 koishi-plugin-command-keyword-sentinel。将关键词填入 keywords，
+封印时长由 timeLimit 控制。
 
 ## 指令
 
 | 指令 | 说明 |
 | --- | --- |
-| `sentinel` | 查看帮助 |
-| `sentinel.seal <@成员> [时长]` | 手动封印（秒） |
-| `sentinel.unseal <@成员>` | 解除封印 |
-| `sentinel.list` | 查看封印列表 |
+| sentinel | 查看帮助 |
+| sentinel.seal &lt;@成员&gt; [时长] | 手动封印，时长单位为秒 |
+| sentinel.unseal &lt;@成员&gt; | 解除封印 |
+| sentinel.list | 查看封印列表 |
 
-## QQ 群
+## 许可证
 
-956758505
-
-<br>
-
-#### License
-
-<sup>
-Licensed under either of <a href="LICENSE-APACHE">Apache License, Version
-2.0</a> or <a href="LICENSE-MIT">MIT license</a> at your option.
-</sup>
-
-<br>
-
-<sub>
-Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in this crate by you, as defined in the Apache-2.0 license, shall
-be dual licensed as above, without any additional terms or conditions.
-</sub>
+可按 [Apache-2.0](LICENSE-APACHE) 或 [MIT](LICENSE-MIT) 使用。
