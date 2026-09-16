@@ -1,6 +1,6 @@
 # koishi-plugin-command-keyword-sentinel
 
-指令关键词过滤：命中关键词时拦截指令并暂时封印用户
+指令关键词哨兵 · 命中关键词时拦截指令并暂时封印成员
 
 ## 安装
 
