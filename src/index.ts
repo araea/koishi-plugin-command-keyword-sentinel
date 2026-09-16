@@ -214,7 +214,7 @@ export function apply(ctx: Context, config: Config) {
   const cmd = ctx.command('sentinel', '指令关键词哨兵')
     .alias('commandKeywordSentinel')
 
-  cmd.subcommand('.seal <target:user> [duration:posint]', '封印一位成员', { authority: config.manageAuthority })
+  cmd.subcommand('.seal <target:user> [duration:posint]', '封印指定成员一段时间', { authority: config.manageAuthority })
     .usage('时长单位为秒，省略则使用配置里的默认封印时长。')
     .example('sentinel.seal @小明 300')
     .action(({ session }, target, duration) => {
@@ -250,10 +250,10 @@ export function apply(ctx: Context, config: Config) {
       if (!lines.length) {
         return '📋 当前没有被封印的成员\n名单会在有成员被封印后出现在这里。\n发送「sentinel.seal @某人」封印一位成员。'
       }
-      // 纯文本不出图，列四个封顶，其余折成一行汇总
-      const shown = lines.slice(0, 4)
+      // 纯文本不出图，含标题整条控制在五行内
+      const shown = lines.slice(0, 3)
       const more = lines.length - shown.length
-      return `📋 当前被封印的成员\n${shown.join('\n')}${more ? `\n还有 ${more} 位（共 ${lines.length} 位）` : ''}`
+      return `📋 当前被封印的成员\n${shown.join('\n')}${more ? `\n另有 ${more} 位未列（共 ${lines.length} 位）` : ''}`
     })
 
 }
