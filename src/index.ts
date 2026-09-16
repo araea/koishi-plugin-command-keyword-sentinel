@@ -24,7 +24,7 @@ export interface Config {
 
   action: '仅封印无提示' | '仅提示' | '既封印又提示'
   timeLimit: number
-  scope: '全局' | '分群'
+  scope: '全局' | '分频道'
   manageAuthority: number
   managers: string[]
 
@@ -54,12 +54,12 @@ export const Config: Schema<Config> = Schema.intersect([
       .description('命中关键词后的动作。`仅提示` 只发提示不封印；`仅封印无提示` 静默封印，全程不发任何消息。'),
     timeLimit: Schema.natural().min(1).default(60)
       .description('封印时长（秒）。'),
-    scope: Schema.union(['全局', '分群']).default('全局')
-      .description('封印范围。`全局` 表示在任意群被封印后处处生效；`分群` 表示只在触发的那个群生效。'),
+    scope: Schema.union(['全局', '分频道']).default('全局')
+      .description('封印范围。`全局` 表示被封印者在任何频道都受限；`分频道` 表示只在封印它的那个频道受限。'),
     manageAuthority: Schema.natural().min(1).max(5).default(2)
-      .description('使用封印 / 解封 / 列表指令所需的权限等级。设为 1 表示所有人可用。注意：权限等级需要数据库支持，未安装数据库时该项不生效，请改用下面的管理员名单。'),
+      .description('封印 · 解封 · 列表三条指令所需的权限等级。设为 1 表示所有人可用。权限等级需要数据库支持，未安装数据库时该项不生效，可改用下面的管理员名单。'),
     managers: Schema.array(String).role('table').default([])
-      .description('管理员名单，填用户 ID。名单非空时，只有名单内的成员可以使用封印 / 解封 / 列表指令；留空则只依赖上面的权限等级。'),
+      .description('管理员名单，填用户 ID。名单非空时，只有名单内的成员可以发送「sentinel.seal」「sentinel.unseal」「sentinel.list」；留空则只依赖上面的权限等级。'),
   }).description('封印'),
 
   Schema.object({
@@ -126,7 +126,7 @@ export function apply(ctx: Context, config: Config) {
   }
 
   function keyOf(session: Session, userId = session.userId) {
-    if (config.scope !== '分群') return userId
+    if (config.scope !== '分频道') return userId
     return `${session.guildId || session.channelId}:${userId}`
   }
 
@@ -208,14 +208,13 @@ export function apply(ctx: Context, config: Config) {
   function forbid(session: Session) {
     if (!config.managers?.length) return null
     if (config.managers.includes(session.userId)) return null
-    return '⚠️ 这条指令需要更高的权限。'
+    return '⚠️ 权限不够\n这条指令只对管理员开放。'
   }
 
   const cmd = ctx.command('sentinel', '指令关键词哨兵')
     .alias('commandKeywordSentinel')
 
   cmd.subcommand('.seal <target:user> [duration:posint]', '封印一位成员', { authority: config.manageAuthority })
-    .alias('.你不乖哦')
     .usage('时长单位为秒，省略则使用配置里的默认封印时长。')
     .example('sentinel.seal @小明 300')
     .action(({ session }, target, duration) => {
@@ -228,7 +227,6 @@ export function apply(ctx: Context, config: Config) {
     })
 
   cmd.subcommand('.unseal <target:user>', '解除一位成员的封印', { authority: config.manageAuthority })
-    .alias('.我原谅你啦')
     .action(({ session }, target) => {
       const denied = forbid(session)
       if (denied) return denied
@@ -242,15 +240,20 @@ export function apply(ctx: Context, config: Config) {
     .action(({ session }) => {
       const denied = forbid(session)
       if (denied) return denied
-      const prefix = config.scope === '分群' ? `${session.guildId || session.channelId}:` : ''
+      const prefix = config.scope === '分频道' ? `${session.guildId || session.channelId}:` : ''
       const lines: string[] = []
       for (const key of seals.keys()) {
         if (!key.startsWith(prefix)) continue
         const left = remaining(key)
         if (left > 0) lines.push(`${key.slice(prefix.length)}（剩余 ${left} 秒）`)
       }
-      if (!lines.length) return '📋 当前没有被封印的成员。'
-      return `📋 当前被封印的成员\n${lines.join('\n')}`
+      if (!lines.length) {
+        return '📋 当前没有被封印的成员\n名单会在有成员被封印后出现在这里。\n发送「sentinel.seal @某人」封印一位成员。'
+      }
+      // 纯文本不出图，列四个封顶，其余折成一行汇总
+      const shown = lines.slice(0, 4)
+      const more = lines.length - shown.length
+      return `📋 当前被封印的成员\n${shown.join('\n')}${more ? `\n还有 ${more} 位（共 ${lines.length} 位）` : ''}`
     })
 
 }

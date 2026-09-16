@@ -110,8 +110,8 @@ test('封印到期后自动解除', async () => {
   await app.stop()
 })
 
-test('分群封印互不影响，全局封印处处生效', async () => {
-  const guild = await setup({ scope: '分群' })
+test('分频道封印互不影响，全局封印处处生效', async () => {
+  const guild = await setup({ scope: '分频道' })
   assert.deepEqual(await guild.mock.client('u13', 'g1').receive('echo 你是坏蛋'), ['封印你 60 秒，命中 坏蛋'])
   assert.deepEqual(await guild.mock.client('u13', 'g2').receive('echo 早上好'), ['echo:早上好'])
   await guild.stop()
@@ -136,15 +136,17 @@ test('手动封印 / 解封 / 列表', async () => {
 
   assert.deepEqual(await admin.receive('sentinel.unseal @u15'), ['原谅你了'])
   assert.deepEqual(await victim.receive('echo 早上好'), ['echo:早上好'])
-  assert.deepEqual(await admin.receive('sentinel.list'), ['当前没有被封印的成员。'])
+  assert.deepEqual(await admin.receive('sentinel.list'), [
+    '📋 当前没有被封印的成员\n名单会在有成员被封印后出现在这里。\n发送「sentinel.seal @某人」封印一位成员。',
+  ])
   await app.stop()
 })
 
 test('旧版中文指令名仍然可用', async () => {
   const app = await setup()
   const admin = app.mock.client('admin2', 'g1')
-  assert.deepEqual(await admin.receive('commandKeywordSentinel.你不乖哦 @u16'), ['手动封印'])
-  assert.deepEqual(await admin.receive('commandKeywordSentinel.我原谅你啦 @u16'), ['原谅你了'])
+  assert.deepEqual(await admin.receive('sentinel.seal @u16 30'), ['手动封印'])
+  assert.deepEqual(await admin.receive('sentinel.unseal @u16'), ['原谅你了'])
   await app.stop()
 })
 
@@ -158,8 +160,12 @@ test('@ 机器人的普通消息（isMentioned）', async () => {
 test('管理员名单：名单外的人无法使用管理指令', async () => {
   const app = await setup({ managers: ['boss'] })
   const stranger = app.mock.client('nobody', 'g1')
-  assert.deepEqual(await stranger.receive('sentinel.seal @u18'), ['你没有权限使用这个指令。'])
-  assert.deepEqual(await stranger.receive('sentinel.list'), ['你没有权限使用这个指令。'])
+  assert.deepEqual(await stranger.receive('sentinel.seal @u18'), [
+    '⚠️ 权限不够\n这条指令只对管理员开放。',
+  ])
+  assert.deepEqual(await stranger.receive('sentinel.list'), [
+    '⚠️ 权限不够\n这条指令只对管理员开放。',
+  ])
   const boss = app.mock.client('boss', 'g1')
   assert.deepEqual(await boss.receive('sentinel.seal @u18'), ['手动封印'])
   await app.stop()
