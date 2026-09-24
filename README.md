@@ -1,6 +1,6 @@
-# koishi-plugin-command-keyword-sentinel
+# 指令关键词哨兵
 
-指令关键词哨兵 · 命中关键词时拦截指令并暂时封印成员
+Koishi 插件：命中指定关键词时拦截指令，并按设定时长封印成员。
 
 ## 安装
 
@@ -8,16 +8,16 @@
 yarn add koishi-plugin-command-keyword-sentinel
 ```
 
-在 Koishi 配置中启用。关键词填入 `keywords`，封印时长由 `timeLimit` 控制。
+在 Koishi 中启用，并在配置中设置 `keywords` 和封印时长 `timeLimit`。
 
 ## 指令
 
 | 指令 | 说明 |
 | --- | --- |
-| `sentinel` | 帮助 |
+| `sentinel` | 查看帮助 |
 | `sentinel.seal <@成员> [时长]` | 手动封印，时长单位为秒 |
 | `sentinel.unseal <@成员>` | 解除封印 |
-| `sentinel.list` | 封印列表 |
+| `sentinel.list` | 查看封印列表 |
 
 ## 许可证
 
