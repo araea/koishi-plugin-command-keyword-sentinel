@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-command-keyword-sentinel",
   "description": "Koishi 指令关键词拦截插件：命中关键词时阻止指令并临时封印成员。",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
