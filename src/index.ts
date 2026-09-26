@@ -1,4 +1,3 @@
-import { usePresentation } from './ux'
 import { Context, Schema, Session, Time } from 'koishi'
 
 export const name = 'command-keyword-sentinel'
@@ -88,7 +87,6 @@ interface Matcher {
 }
 
 export function apply(ctx: Context, config: Config) {
-  const presentation = usePresentation(ctx, 'sentinel')
   const logger = ctx.logger(name)
   /** key -> 封印到期的时间戳（毫秒） */
   const seals = new Map<string, number>()
