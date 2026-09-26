@@ -22,3 +22,11 @@ yarn add koishi-plugin-command-keyword-sentinel
 ## 许可证
 
 可按 [Apache-2.0](LICENSE-APACHE) 或 [MIT](LICENSE-MIT) 使用。
+
+## 显示与交互
+
+发送 `sentinel.显示 文字` 或 `sentinel.显示 图文` 切换个人显示偏好。同一机器人中的配套插件共享选择，重启后恢复图文。图文模式中的信息图片附带文字说明；作品素材与感官测试的适用边界见 [设计系统](./DESIGN_SYSTEM.md)。
+
+本次更新：封印列表改为每页 10 位，提供下一页指令，不再只展示前三位。
+
+使用 `sentinel.list 2` 查看第二页；每页 10 位，页脚提供后续页入口。

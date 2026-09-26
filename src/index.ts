@@ -1,3 +1,4 @@
+import { usePresentation } from './ux'
 import { Context, Schema, Session, Time } from 'koishi'
 
 export const name = 'command-keyword-sentinel'
@@ -87,6 +88,7 @@ interface Matcher {
 }
 
 export function apply(ctx: Context, config: Config) {
+  const presentation = usePresentation(ctx, 'sentinel')
   const logger = ctx.logger(name)
   /** key -> 封印到期的时间戳（毫秒） */
   const seals = new Map<string, number>()
@@ -235,9 +237,9 @@ export function apply(ctx: Context, config: Config) {
       return render(config.forgiveMessage, {})
     })
 
-  cmd.subcommand('.list', '查看被封印的成员', { authority: config.manageAuthority })
+  cmd.subcommand('.list [page:posint]', '查看被封印的成员', { authority: config.manageAuthority })
     .alias('.封印列表')
-    .action(({ session }) => {
+    .action(({ session }, page = 1) => {
       const denied = forbid(session)
       if (denied) return denied
       const prefix = config.scope === '分频道' ? `${session.guildId || session.channelId}:` : ''
@@ -250,10 +252,11 @@ export function apply(ctx: Context, config: Config) {
       if (!lines.length) {
         return '📋 当前没有被封印的成员\n名单会在有成员被封印后出现在这里。\n发送「sentinel.seal @某人」封印一位成员。'
       }
-      // 纯文本不出图，含标题整条控制在五行内
-      const shown = lines.slice(0, 3)
-      const more = lines.length - shown.length
-      return `📋 当前被封印的成员\n${shown.join('\n')}${more ? `\n另有 ${more} 位未列（共 ${lines.length} 位）` : ''}`
+      // 每页十位，页脚提供下一页指令
+      const pages = Math.ceil(lines.length / 10)
+      if (page > pages) return `页码超出范围，共 ${pages} 页。`
+      const shown = lines.slice((page - 1) * 10, page * 10)
+      return `当前被封印的成员（${page}/${pages} 页，共 ${lines.length} 位）\n${shown.join('\n')}${page < pages ? `\n下一页：sentinel.list ${page + 1}` : ''}`
     })
 
 }
