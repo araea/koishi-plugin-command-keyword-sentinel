@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-command-keyword-sentinel",
-  "description": "Koishi 插件 · 指令关键词哨兵。",
+  "description": "Koishi 插件：命中指定关键词时拦截指令并按设定时长封印成员。",
   "version": "2.3.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
