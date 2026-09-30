@@ -55,5 +55,4 @@ npm i koishi-plugin-command-keyword-sentinel
 ## 链接
 
 - [设计系统](DESIGN_SYSTEM.md)
-- [更新日志](CHANGELOG.md)
 - [MIT](LICENSE-MIT) / [Apache-2.0](LICENSE-APACHE)
