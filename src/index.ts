@@ -1,4 +1,5 @@
 import { Context, Schema, Session, Time } from 'koishi'
+import { helpOf } from './help'
 
 export const name = 'command-keyword-sentinel'
 
@@ -213,6 +214,12 @@ export function apply(ctx: Context, config: Config) {
 
   const cmd = ctx.command('sentinel', '指令关键词哨兵')
     .alias('commandKeywordSentinel')
+    .userFields(['authority'])
+    .action(async ({ session }) => {
+      const { title, entries } = await helpOf(session, 'sentinel', ['seal', 'unseal', 'list'].map((name) => `sentinel.${name}`))
+      const visible = forbid(session) ? [] : entries
+      return [`📋 ${title}`, ...visible.map(({ name, description }) => `${name} · ${description}`), visible.length ? '例：「sentinel.seal @小明 300」，末尾是秒数。' : '这里的子指令只对管理员开放。'].join('\n')
+    })
 
   cmd.subcommand('.seal <target:user> [duration:posint]', '封印指定成员一段时间', { authority: config.manageAuthority })
     .usage('时长单位为秒，省略则使用配置里的默认封印时长。')
