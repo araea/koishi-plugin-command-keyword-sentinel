@@ -5,7 +5,7 @@ export const name = 'command-keyword-sentinel'
 
 export const usage = `## 使用
 
-在 \`keywords\` 中填入关键词。命中时拦截指令并封印成员，封印时长由 \`timeLimit\` 控制。
+在 \`keywords\` 中填入关键词。命中 \`keywords\` 后按 \`action\` 拦截指令并封印成员，封印时长由 \`timeLimit\` 控制。
 
 ## 指令
 
@@ -14,7 +14,7 @@ export const usage = `## 使用
 | \`sentinel\` | 查看帮助 |
 | \`sentinel.seal <@成员> [时长]\` | 手动封印，时长单位为秒 |
 | \`sentinel.unseal <@成员>\` | 解除封印 |
-| \`sentinel.list\` | 查看封印列表 |`
+| \`sentinel.list [page]\` | 查看封印列表，每页 10 位 |`
 
 export interface Config {
   keywords: string[]

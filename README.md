@@ -24,8 +24,6 @@ npm i koishi-plugin-command-keyword-sentinel
 | `sentinel.unseal <@成员>` | 解除封印 |
 | `sentinel.list [page]` | 查看封印列表，每页 10 位 |
 
-`sentinel.list 2` 查看第二页，页脚提供后续页入口。
-
 ## 配置
 
 | 配置项 | 类型 | 默认值 | 说明 |
